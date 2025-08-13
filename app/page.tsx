@@ -5,7 +5,7 @@
 import React, { useState, useEffect, useRef, Suspense, lazy, useContext } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiArrowRight, FiArrowUpRight, FiBook, FiGlobe, FiLayers, FiUsers, FiChevronDown, FiArrowDown, FiExternalLink, FiClock, FiPlay } from 'react-icons/fi';
+import { FiArrowRight, FiArrowUpRight, FiBook, FiGlobe, FiLayers, FiUsers, FiChevronDown, FiArrowDown, FiExternalLink, FiClock, FiPlay, FiDownload } from 'react-icons/fi';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { RESEARCH_CATEGORIES } from '@/lib/constants';
 import MorphingShape from '@/components/MorphingShape';
@@ -480,6 +480,19 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* CIO-UVA Contract Link */}
+      <div className="relative z-30 -mt-16 sm:-mt-20 mb-12 sm:mb-16 lg:mb-20 px-4 text-center">
+        <a
+          href="/CIO_UVA_Contract.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center text-xs font-medium text-slate-500 transition-colors duration-200 hover:text-slate-900 sm:text-sm"
+        >
+          <span>See our UVA contract</span>
+          <FiExternalLink className="ml-1.5 h-3.5 w-3.5 transform transition-transform group-hover:translate-x-0.5" />
+        </a>
+      </div>
 
               {/* Government Agencies Policy Advisory Carousel */}
       <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-r from-slate-50 to-white border-b border-slate-200">
@@ -1018,6 +1031,15 @@ export default function Home() {
                 <p className="text-sm text-slate-600 font-light leading-relaxed font-roboto">
                   Engaging young audiences with accessible policy content and insights
                 </p>
+                <a
+                  href="https://www.tiktok.com/@theperrininstitution"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center mt-4 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-all duration-200 text-sm font-roboto"
+                >
+                  <FiExternalLink className="mr-2 w-4 h-4" />
+                  Visit TikTok
+                </a>
               </div>
             </motion.div>
             
@@ -1063,88 +1085,50 @@ export default function Home() {
         </div>
       </section>
       
-      {/* Research Publication Section - Refined Design */}
+      {/* Research Section */}
       <section className="py-12 sm:py-16 bg-white border-t border-slate-200">
         <div className="container mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12">
-            {/* Left column - Text content */}
-            <div className="lg:col-span-5 flex flex-col justify-center">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light mb-6 sm:mb-8 text-slate-900 leading-tight font-roboto">
-                We deliver unbiased research to decisionmakers who help set the global policy agenda
-              </h2>
-              
-              <p className="text-base sm:text-lg text-slate-600 mb-6 sm:mb-8 font-light font-roboto">
-                Our scholars generate strategic ideas and independent analysis to help inform countries, institutions, and leaders as they take on the most difficult global problems.
-              </p>
-              
-              {/* Research items */}
-              <div className="space-y-6 sm:space-y-8">
-                {articles.slice(0, 2).map((article, index) => (
-                  <Link 
-                    key={article.id} 
-                    href={`/news/${article.id}`}
-                    className="flex flex-col group cursor-pointer transition-all duration-200 hover:bg-slate-50 p-3 -m-3 rounded-lg"
-                  >
-                    <span className="text-xs sm:text-sm text-slate-700 font-medium mb-1 font-roboto">
-                      {article.type === 'opinion' ? 'Commentary' : 'Report'}
-                    </span>
-                    <h3 className="text-lg sm:text-xl font-medium mb-2 font-roboto text-slate-900 leading-tight group-hover:text-slate-700 transition-colors">
-                      {article.title}
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <div className="flex -space-x-2">
-                        <div className="w-6 sm:w-7 h-6 sm:h-7 rounded-full bg-slate-300 flex items-center justify-center text-slate-700 font-medium ring-1 ring-white text-xs">
-                          {article.authorName ? article.authorName.split(' ').map(name => name.charAt(0)).join('').slice(0, 2) : 'PR'}
-                        </div>
-                      </div>
-                      <span className="text-xs sm:text-sm text-slate-600 font-roboto">
-                        {article.authorName || 'Perrin Researcher'}
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
+
+          {/* Section Header */}
+          <div className="text-center max-w-4xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-4 font-roboto leading-tight">
+              Our Research
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 mb-10 sm:mb-12 font-light font-roboto">
+              Our scholars generate strategic ideas and independent analysis to help inform countries, institutions, and leaders.
+            </p>
           </div>
 
-          {/* Featured Publication Section */}
-          <div className="mt-12 sm:mt-16">
-            {/* Publication Abstract */}
-            <div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-6 font-roboto">
+          {/* Featured Publication Download */}
+          <div className="mt-12 sm:mt-16 max-w-3xl mx-auto">
+            <div className="bg-slate-50 rounded-2xl border border-slate-200 p-6 sm:p-8 text-center hover:shadow-lg transition-all duration-300">
+              <h3 className="text-xl sm:text-2xl font-semibold text-slate-800 mb-3 font-roboto">
                 Featured Publication
               </h3>
-              <div className="space-y-6">
-                <div>
-                  <h4 className="text-lg font-semibold text-slate-700 mb-2 font-roboto">The U.S.-China Tech Rivalry</h4>
-                  <p className="text-slate-600 font-roboto text-sm sm:text-base">
-                    The strategy surrounding artificial intelligence semiconductors has drastically altered relations between the U.S. and China, solidifying the technology as a key point, with government intervention playing a significant role in global supply chains. Currently, export controls around semiconductors are the most restricted in history, specifically targeting China’s access to A.I. chips and manufacturing equipment. China has responded with large state-led investments of over $300 billion to become self-sufficient, only further fueling this rivalry with the U.S.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-slate-700 mb-2 font-roboto">International Law and Enforcement</h4>
-                  <p className="text-slate-600 font-roboto text-sm sm:text-base">
-                    International law controls and regulates export controls through a number of mechanisms. These include international treaties, multilateral export control regimes, and resolutions by the United Nations Security Council. However, enforcement has been difficult because of jurisdictional problems, varying national interpretations of new rules, and the constantly unmet need for consistent global standards.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Embedded PDF */}
-            <div className="mt-8 sm:mt-10">
-              <div className="relative w-full h-[600px] sm:h-[750px] lg:h-[800px] rounded-lg shadow-lg overflow-hidden border border-slate-200">
-                <iframe 
-                  src="/papers/YIP_PAPER.pdf#toolbar=0&navpanes=0"
-                  title="YIP Paper"
+              <p className="text-slate-600 font-roboto text-sm sm:text-base mb-6">
+                The U.S.-China Tech Rivalry: A comprehensive analysis of the strategic implications of the AI semiconductor race.
+              </p>
+              <div className="mb-6 h-96 overflow-y-auto rounded-lg border border-slate-300 bg-white">
+                <iframe
+                  src={`/YIP_PAPER.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
                   className="w-full h-full"
-                  frameBorder="0"
-                />
+                  title="Featured Publication Preview"
+                  // sandbox="allow-scripts allow-same-origin"
+                ></iframe>
               </div>
+              <a 
+                href="/YIP_PAPER.pdf"
+                download="YIP_PAPER.pdf"
+                className="inline-flex items-center px-6 sm:px-8 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-all duration-200 text-sm sm:text-base font-roboto shadow-sm hover:shadow-md"
+              >
+                <FiDownload className="mr-2 w-4 h-4" />
+                Download Full Report
+              </a>
             </div>
           </div>
+
         </div>
       </section>
     </motion.main>
   );
 }
-

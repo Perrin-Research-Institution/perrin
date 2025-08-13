@@ -106,7 +106,23 @@ const partnerships = [
     website: "https://www.venturedglobal.org/",
     status: "Fellowship Partnership",
     color: "teal"
+  },
+  {
+    name: "HumanityBridge.love",
+    category: "Social Impact Platform",
+    description: "Connecting you with work & volunteer opportunities worldwide. Founded by Finn Järvi & Cash Hilinski",
+    longDescription: "HumanityBridge.love represents a new paradigm in social impact technology, creating meaningful connections between diverse communities worldwide. Our partnership focuses on developing scalable solutions for humanitarian challenges, fostering cross-cultural understanding, and building sustainable social impact networks through innovative digital platforms.",
+    metrics: [
+      { label: "Total Users", value: "10K+", icon: Globe },
+      { label: "Active Projects", value: "1.4M+", icon: Target },
+      { label: "Languages Supported", value: "10+", icon: Users }
+    ],
+    image: "/humanitybridge.png",
+    website: "https://humanitybridge.love/",
+    status: "Active Partnership",
+    color: "purple"
   }
+  
 ];
 
 
@@ -121,7 +137,8 @@ export default function SpecialProjectsPage() {
     "All": [],
     "Education": ["Education Technology", "Tech Fellowship Program", "Digital Literacy Initiative"],
     "Employment": ["Career Intelligence Platform", "Reentry Employment Platform"],
-    "Health & Policy": ["Health Research & Policy"]
+    "Health & Policy": ["Health Research & Policy"],
+    "Social Impact": ["Social Impact Platform"]
   };
 
   const filters = Object.keys(categoryMap);
