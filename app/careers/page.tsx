@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { FiArrowRight, FiMapPin, FiClock, FiChevronDown, FiChevronUp, FiUsers, FiBookOpen, FiTrendingUp } from 'react-icons/fi';
 import { getJobs } from '../../lib/jobs';
+import { GlobalLoadingContext } from '@/components/GlobalLoading';
 
 interface JobUI {
   id: string;
@@ -27,6 +28,7 @@ export default function CareersPage() {
   const [jobs, setJobs] = useState<JobUI[]>([]);
   const [loading, setLoading] = useState(true);
   const [restored, setRestored] = useState(false);
+  const splineRef = useRef<any>(null);
 
   useEffect(() => {
     // Try restore from sessionStorage to avoid pop-in on back navigation
@@ -60,6 +62,22 @@ export default function CareersPage() {
     })();
   }, []);
 
+  // Configure Spline viewer (disable excessive zoom if possible)
+  useEffect(() => {
+    const el: any = splineRef.current;
+    if (!el) return;
+    const handleLoad = () => {
+      try {
+        // Try common control APIs exposed by the viewer/runtime
+        if (el?.viewer?.controls) el.viewer.controls.enableZoom = false;
+        if (el?.scene?.controls) el.scene.controls.enableZoom = false;
+        if (el?.controls) el.controls.enableZoom = false;
+      } catch {}
+    };
+    el.addEventListener('load', handleLoad);
+    return () => el.removeEventListener('load', handleLoad);
+  }, [splineRef.current]);
+
   // Persist UI state
   useEffect(() => {
     try {
@@ -79,14 +97,7 @@ export default function CareersPage() {
     return matchesSearch && matchesType && matchesDepartment;
   });
 
-  const getUrgencyColor = (urgency: string) => {
-    switch (urgency) {
-      case 'high': return 'text-red-600 bg-red-50 border-red-200';
-      case 'medium': return 'text-amber-600 bg-amber-50 border-amber-200';
-      case 'low': return 'text-green-600 bg-green-50 border-green-200';
-      default: return 'text-slate-600 bg-slate-50 border-slate-200';
-    }
-  };
+  // Removed urgency badges/accents per request
 
   const getDepartmentIcon = (department: string) => {
     switch (department) {
@@ -98,66 +109,69 @@ export default function CareersPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+    <main className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-16 sm:pt-40 sm:pb-20 lg:pt-48 lg:pb-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-4xl mx-auto"
-          >
-            <div className="flex items-center justify-center mb-6">
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
-              <span className="text-xs sm:text-sm font-medium text-slate-600 tracking-wide mx-4">JOIN OUR MISSION</span>
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
-            </div>
-            
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-slate-900 leading-tight tracking-tight mb-6 font-roboto">
-              Shape Policy
-              <br />
-              <span className="font-medium text-slate-700">at Perrin</span>
-            </h1>
-            
-            <p className="text-lg sm:text-xl lg:text-2xl text-slate-600 font-light leading-relaxed font-roboto max-w-3xl mx-auto">
-              Join a community of researchers, analysts, and innovators working to transform how policy is made in the digital age
-            </p>
-          </motion.div>
-        </div>
+      <section className="relative w-full sm:h-[92vh] lg:h-[100vh] overflow-hidden">
+		{/* Mobile: no hero to avoid blank space */}
+		<div className="hidden sm:block">
+			{/* Desktop/tablet view */}
+			<div className="absolute inset-0 origin-center scale-105 md:scale-110 lg:scale-112 transform-gpu will-change-transform filter saturate-110 contrast-105 touch-pan-y">
+				<iframe
+					src="https://my.spline.design/glassmorphlandingpage-1la93iQR7FbfZmn8LDWFpSUp/"
+					className="w-full h-full"
+					style={{ background: 'transparent' }}
+					frameBorder={0}
+					allow="autoplay; camera; microphone; xr-spatial-tracking; gyroscope; accelerometer"
+					loading="lazy"
+					ref={splineRef}
+				/>
+			</div>
+		</div>
+        {/* Soft bottom gradient to ease transition into content */}
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 hidden sm:block h-28 lg:h-32 bg-gradient-to-t from-white to-transparent" />
+        {/* Discreet corner mask to hide Spline watermark */}
+		<div 
+			className="pointer-events-none absolute bottom-0 right-0 hidden sm:block w-48 h-32 sm:w-56 sm:h-40"
+          style={{
+            backgroundImage: 'radial-gradient(120% 90% at 100% 100%, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 40%, rgba(255,255,255,0.6) 60%, rgba(255,255,255,0) 78%)'
+          }}
+        />
       </section>
 
       {/* Main Content */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white">
+      <section className="pt-20 sm:pt-0 lg:pt-2 pb-16 sm:pb-20 lg:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Filters */}
-          <div className="mb-8 sm:mb-12 space-y-4">
+          <div className="mt-0 sm:-mt-16 lg:-mt-24 mb-8 sm:mb-10 space-y-4">
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="flex-1">
                 {loading ? (
-                  <div className="h-[44px] w-full bg-slate-100 border border-slate-200 rounded-lg animate-pulse" />
+                  <div className="h-[44px] w-full bg-white border border-slate-200 rounded-xl shadow-sm animate-pulse" />
                 ) : (
-                  <input
-                    type="text"
-                    placeholder="Search jobs..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300 font-roboto"
-                  />
+                  <div className="relative">
+                    <svg className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"/></svg>
+                    <input
+                      type="text"
+                      placeholder="Search roles"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all duration-200 font-roboto shadow-sm"
+                    />
+                  </div>
                 )}
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 {loading ? (
                   <>
-                    <div className="h-[44px] w-40 bg-slate-100 border border-slate-200 rounded-lg animate-pulse" />
-                    <div className="h-[44px] w-40 bg-slate-100 border border-slate-200 rounded-lg animate-pulse" />
+                    <div className="h-[44px] w-40 bg-white border border-slate-200 rounded-xl shadow-sm animate-pulse" />
+                    <div className="h-[44px] w-40 bg-white border border-slate-200 rounded-xl shadow-sm animate-pulse" />
                   </>
                 ) : (
                   <>
                     <select
                       value={selectedType || 'All'}
                       onChange={(e) => setSelectedType(e.target.value === 'All' ? null : e.target.value)}
-                      className="px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto"
+                      className="px-4 py-3 bg-white border border-slate-200 rounded-full text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 font-roboto shadow-sm"
                     >
                       {jobTypes.map((type) => (
                         <option key={type} value={type}>{type}</option>
@@ -166,7 +180,7 @@ export default function CareersPage() {
                     <select
                       value={selectedDepartment || 'All'}
                       onChange={(e) => setSelectedDepartment(e.target.value === 'All' ? null : e.target.value)}
-                      className="px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 font-roboto"
+                      className="px-4 py-3 bg-white border border-slate-200 rounded-full text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 font-roboto shadow-sm"
                     >
                       {departments.map((dept) => (
                         <option key={dept} value={dept}>{dept}</option>
@@ -177,7 +191,7 @@ export default function CareersPage() {
               </div>
             </div>
             <div className="text-slate-600 text-sm font-roboto min-h-[20px]">
-              {!loading && <span>Showing {filteredJobs.length} of {jobs.length} positions</span>}
+              {!loading && <span>Showing {filteredJobs.length} of {jobs.length} roles</span>}
             </div>
           </div>
 
@@ -185,7 +199,7 @@ export default function CareersPage() {
           {loading ? (
             <div className="space-y-4 sm:space-y-6">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-white border border-slate-200 rounded-xl p-6 sm:p-8 animate-pulse">
+                <div key={i} className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm animate-pulse">
                   <div className="h-6 w-2/3 bg-slate-100 rounded mb-3" />
                   <div className="flex gap-4 mb-4">
                     <div className="h-4 w-24 bg-slate-100 rounded" />
@@ -204,32 +218,33 @@ export default function CareersPage() {
                   initial={restored ? false : { opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: restored ? 0.15 : 0.3, ease: 'easeOut' }}
-                className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-slate-300 hover:shadow-lg transition-all duration-300"
+                className={`group bg-white/70 backdrop-blur-sm border border-slate-200 rounded-2xl overflow-hidden hover:border-slate-300 shadow-sm hover:shadow-md transition-all duration-200`}
               >
                 <button
                   onClick={() => setExpandedJob(expandedJob === job.id ? null : job.id)}
-                  className="w-full p-6 sm:p-8 text-left"
+                  className="relative w-full p-6 sm:p-8 text-left"
                 >
+                  <div className="pointer-events-none absolute inset-x-0 -top-10 h-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-b from-white to-transparent" />
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-3">
-                        <h3 className="text-xl sm:text-2xl font-medium text-slate-900 font-roboto">{job.title}</h3>
+                        <h3 className="text-xl sm:text-2xl font-medium text-slate-900 font-roboto tracking-tight">{job.title}</h3>
                       </div>
-                      <div className="flex flex-wrap gap-4 text-sm text-slate-600 mb-3 font-roboto">
-                        <span className="flex items-center">
+                      <div className="flex flex-wrap gap-2 sm:gap-3 text-sm text-slate-600 mb-3 font-roboto">
+                        <span className="inline-flex items-center rounded-full bg-white text-slate-700 px-3 py-1 border border-slate-200 shadow-xs">
                           {getDepartmentIcon(job.department)}
                           <span className="ml-2">{job.department}</span>
                         </span>
-                        <span className="flex items-center">
-                          <FiMapPin className="mr-2" />
-                          {job.location}
+                        <span className="inline-flex items-center rounded-full bg-white text-slate-700 px-3 py-1 border border-slate-200 shadow-xs">
+                          <FiMapPin className="mr-2" />{job.location}
                         </span>
-                        <span className="flex items-center">
-                          <FiClock className="mr-2" />
-                          {job.type}
+                        <span className="inline-flex items-center rounded-full bg-white text-slate-700 px-3 py-1 border border-slate-200 shadow-xs">
+                          <FiClock className="mr-2" />{job.type}
                         </span>
                       </div>
-                      <p className="text-slate-600 text-sm sm:text-base line-clamp-2 font-roboto font-light">{job.description}</p>
+                      <p className="text-slate-600 text-sm sm:text-base line-clamp-2 font-roboto font-light">
+                        {job.description}
+                      </p>
                     </div>
                     <div className="text-slate-400 ml-4">
                       {expandedJob === job.id ? <FiChevronUp /> : <FiChevronDown />}
@@ -246,7 +261,7 @@ export default function CareersPage() {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden"
                 >
-                  <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-6">
+                  <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-6 bg-gradient-to-b from-white to-white/90">
                     <div>
                       <h4 className="text-lg font-medium text-slate-900 mb-3 font-roboto">Description</h4>
                       <p className="text-slate-600 font-roboto font-light leading-relaxed">{job.description}</p>
@@ -276,14 +291,15 @@ export default function CareersPage() {
                       </ul>
                     </div>
 
-                    <div className="pt-4 flex flex-col sm:flex-row gap-4">
+                    <div className="pt-2 flex flex-col sm:flex-row gap-3">
                       <a
                         href={`/careers/apply/${job.id}`}
-                        className="inline-flex items-center justify-center px-6 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-all duration-200 font-roboto"
+                        className="inline-flex items-center justify-center px-5 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-all duration-150 font-roboto shadow-sm"
                       >
                         Apply Now
                         <FiArrowRight className="ml-2" />
                       </a>
+                      <span className="text-slate-500 text-sm self-center">Posted {job.postedDate}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -294,7 +310,7 @@ export default function CareersPage() {
 
           {filteredJobs.length === 0 && (
             <div className="text-center py-12">
-              <div className="text-slate-600 text-lg mb-4 font-roboto">No jobs found matching your criteria</div>
+              <div className="text-slate-600 text-lg mb-4 font-roboto">No roles found matching your filters</div>
               <button
                 onClick={() => {
                   setSearchQuery('');
