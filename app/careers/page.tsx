@@ -29,6 +29,8 @@ export default function CareersPage() {
   const [loading, setLoading] = useState(true);
   const [restored, setRestored] = useState(false);
   const splineRef = useRef<any>(null);
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const [splineInteractive, setSplineInteractive] = useState(false);
 
   useEffect(() => {
     // Try restore from sessionStorage to avoid pop-in on back navigation
@@ -78,6 +80,23 @@ export default function CareersPage() {
     return () => el.removeEventListener('load', handleLoad);
   }, [splineRef.current]);
 
+  // Re-lock Spline on wheel within hero to avoid trackpad scroll hijack
+  useEffect(() => {
+    function onWheel(e: WheelEvent) {
+      if (!splineInteractive) return;
+      const hero = heroRef.current;
+      if (!hero) return;
+      const rect = hero.getBoundingClientRect();
+      const x = (e as any).clientX ?? 0;
+      const y = (e as any).clientY ?? 0;
+      if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+        setSplineInteractive(false);
+      }
+    }
+    window.addEventListener('wheel', onWheel, { passive: true });
+    return () => window.removeEventListener('wheel', onWheel as any);
+  }, [splineInteractive]);
+
   // Persist UI state
   useEffect(() => {
     try {
@@ -111,16 +130,21 @@ export default function CareersPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
       {/* Hero Section */}
-      <section className="relative w-full sm:h-[92vh] lg:h-[100vh] overflow-hidden">
-		{/* Mobile: no hero to avoid blank space */}
-		<div className="hidden sm:block">
+      <section ref={heroRef} className="relative w-full sm:h-[92vh] lg:h-[100vh] overflow-hidden">
+        {/* Mobile: no hero to avoid blank space */}
+        <div className="hidden sm:block">
 			{/* Desktop/tablet view */}
-			<div className="absolute inset-0 origin-center scale-105 md:scale-110 lg:scale-112 transform-gpu will-change-transform filter saturate-110 contrast-105 touch-pan-y">
-				<iframe
+          <div className="absolute inset-0 origin-center scale-105 md:scale-110 lg:scale-112 transform-gpu will-change-transform filter saturate-110 contrast-105 touch-pan-y"
+               onMouseEnter={() => setSplineInteractive(true)}
+               onMouseLeave={() => setSplineInteractive(false)}
+               onTouchStart={() => setSplineInteractive(true)}
+               onTouchEnd={() => setSplineInteractive(false)}
+          >
+            <iframe
 					src="https://my.spline.design/glassmorphlandingpage-1la93iQR7FbfZmn8LDWFpSUp/"
 					className="w-full h-full"
-					style={{ background: 'transparent' }}
-					frameBorder={0}
+              style={{ background: 'transparent', pointerEvents: splineInteractive ? 'auto' : 'none' }}
+              frameBorder={0}
 					allow="autoplay; camera; microphone; xr-spatial-tracking; gyroscope; accelerometer"
 					loading="lazy"
 					ref={splineRef}
@@ -128,7 +152,9 @@ export default function CareersPage() {
 			</div>
 		</div>
         {/* Soft bottom gradient to ease transition into content */}
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 hidden sm:block h-28 lg:h-32 bg-gradient-to-t from-white to-transparent" />
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 hidden sm:block h-28 lg:h-32 bg-gradient-to-t from-white to-transparent"
+             onMouseEnter={() => setSplineInteractive(false)}
+        />
         {/* Discreet corner mask to hide Spline watermark */}
 		<div 
 			className="pointer-events-none absolute bottom-0 right-0 hidden sm:block w-48 h-32 sm:w-56 sm:h-40"
