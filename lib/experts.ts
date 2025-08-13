@@ -130,31 +130,8 @@ export const EXPERTS: Expert[] = [
       organizations: ["Perrin Institute"]
     }
   },
-  {
-    id: 9,
-    name: "Danielle Dee",
-    role: "Editor-In-Chief",
-    bio: "Danielle Dee leads the Institute's publication strategy as Editor-In-Chief, managing content development and editorial oversight. Her expertise in academic publishing and content strategy enhances the Institute's research dissemination and impact.",
-    image: "",
-    email: "danielled7599@gmail.com",
-    category: "Leadership",
-    interests: ["Editorial Strategy", "Academic Publishing", "Content Development"],
-    affiliations: {
-      organizations: ["Perrin Institute"]
-    }
-  },
-  {
-    id: 10,
-    name: "Larry Franklin",
-    role: "Chief Design Officer",
-    bio: "Larry Franklin leads visual design and user experience as Chief Design Officer, creating compelling visual communications and intuitive user interfaces that enhance the Institute's digital presence and research accessibility.",
-    image: "",
-    category: "Leadership",
-    interests: ["Visual Design", "User Experience", "Brand Identity"],
-    affiliations: {
-      organizations: ["Perrin Institute"]
-    }
-  },
+  
+  
   {
     id: 11,
     name: "Avani Agarwal",
