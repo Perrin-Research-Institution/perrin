@@ -8,6 +8,7 @@ import { getArticles, Article } from "../../lib/articles";
 import NewsletterSubscription from "@/components/NewsletterSubscription";
 import Navbar from '../../components/Navbar'
 import { useInView } from 'react-intersection-observer'
+import { useGlobalLoading } from '@/lib/hooks/useGlobalLoading'
 
 // Modern animation variants matching events page
 const fadeIn = {
@@ -68,6 +69,7 @@ const categories = [
 ];
 
 export default function NewsPageClient() {
+  const globalLoading = useGlobalLoading()
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [recentNews, setRecentNews] = useState<Article[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
@@ -92,9 +94,14 @@ export default function NewsPageClient() {
   
   useEffect(() => {
     async function fetchArticles() {
-      const articles = await getArticles();
-      setRecentNews(articles);
-      setFilteredArticles(articles);
+      try {
+        globalLoading.setIsLoading(true)
+        const articles = await getArticles();
+        setRecentNews(articles);
+        setFilteredArticles(articles);
+      } finally {
+        globalLoading.setIsLoading(false)
+      }
     }
     fetchArticles();
   }, []);

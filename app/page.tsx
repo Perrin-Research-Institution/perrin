@@ -481,15 +481,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CIO-UVA Contract Link */}
+      {/* UVA CIO status link */}
       <div className="relative z-30 -mt-16 sm:-mt-20 mb-12 sm:mb-16 lg:mb-20 px-4 text-center">
         <a
-          href="/CIO_UVA_Contract.pdf"
+          href="https://virginia.presence.io/organization/the-perrin-institution-at-uva"
           target="_blank"
           rel="noopener noreferrer"
           className="group inline-flex items-center text-xs font-medium text-slate-500 transition-colors duration-200 hover:text-slate-900 sm:text-sm"
         >
-          <span>See our UVA contract</span>
+          <span>Contracted Independent Organization with the University of Virginia</span>
           <FiExternalLink className="ml-1.5 h-3.5 w-3.5 transform transition-transform group-hover:translate-x-0.5" />
         </a>
       </div>

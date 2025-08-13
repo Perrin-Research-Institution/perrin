@@ -67,7 +67,7 @@ export async function PUT(
 
             const applicantFirst = (updated.fields || []).find((f: any) => f.name.toLowerCase() === 'firstname')?.value || 'Applicant'
             const greetingName = typeof applicantFirst === 'string' ? applicantFirst : 'Applicant'
-            const discordUrl = 'https://discord.gg/m63XfSEyh5'
+            const discordUrl = 'https://discord.gg/jXbQFNCZ7v'
             const bodyHtml = isRejected
               ? [
                   `<p>Dear ${greetingName},</p>`,

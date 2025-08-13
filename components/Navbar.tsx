@@ -96,8 +96,8 @@ const STATIC_PAGES: SearchResult[] = [
     description: 'Explore our sponsored projects and strategic initiatives that advance policy research and democratic innovation.'
   },
   {
-    id: 'careers',
-    title: 'Careers',
+    id: 'apply',
+    title: 'Apply',
     subtitle: 'Join our team',
     type: 'page',
     url: '/careers',
@@ -373,6 +373,20 @@ export default function Navbar() {
                 </AnimatePresence>
               </div>
 
+              {/* Apply (second tab) */}
+              <Link 
+                href="/careers" 
+                className={`font-medium transition-colors ${
+                  pathname.includes('/careers') 
+                    ? 'text-teal-600' 
+                    : isScrolled 
+                      ? 'text-gray-800 hover:text-teal-600' 
+                      : 'text-gray-800 hover:text-teal-500'
+                }`}
+              >
+                Apply
+              </Link>
+
               {/* Experts/Directory */}
               <Link 
                 href="/experts" 
@@ -387,47 +401,33 @@ export default function Navbar() {
                 Experts
               </Link>
               
-              {/* Programs */}
-              <div className="relative" ref={dropdownRef}>
-                <button 
-                  onClick={() => toggleDropdown('programs')}
-                  className={`flex items-center px-0.5 font-medium transition-colors ${
-                    activeDropdown === 'programs' 
-                      ? 'text-teal-600' 
-                      : isScrolled 
-                        ? 'text-gray-800 hover:text-teal-600' 
-                        : 'text-gray-800 hover:text-teal-500'
-                  }`}
-                >
-                  <span>Programs</span>
-                  {activeDropdown === 'programs' ? (
-                    <FiChevronUp className="ml-1" size={16} />
-                  ) : (
-                    <FiChevronDown className="ml-1" size={16} />
-                  )}
-                </button>
-                
-                {/* Programs Dropdown */}
-                <AnimatePresence>
-                  {activeDropdown === 'programs' && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute left-0 mt-2 w-64 bg-white border border-gray-100 rounded-xl shadow-soft py-2 z-50"
-                    >
-                      {/* Application removed; keep Scholarship and Events */}
-                      <Link href="/scholarship-center" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-teal-600">
-                        Scholarship Center
-                      </Link>
-                      <Link href="/events" className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-teal-600">
-                        Events
-                      </Link>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+              {/* Scholarship Center */}
+              <Link 
+                href="/scholarship-center" 
+                className={`font-medium transition-colors ${
+                  pathname.startsWith('/scholarship-center') 
+                    ? 'text-teal-600' 
+                    : isScrolled 
+                      ? 'text-gray-800 hover:text-teal-600' 
+                      : 'text-gray-800 hover:text-teal-500'
+                }`}
+              >
+                Scholarship Center
+              </Link>
+
+              {/* Events */}
+              <Link 
+                href="/events" 
+                className={`font-medium transition-colors ${
+                  pathname.startsWith('/events') 
+                    ? 'text-teal-600' 
+                    : isScrolled 
+                      ? 'text-gray-800 hover:text-teal-600' 
+                      : 'text-gray-800 hover:text-teal-500'
+                }`}
+              >
+                Events
+              </Link>
 
               {/* Intelligence */}
               <Link 
@@ -457,19 +457,7 @@ export default function Navbar() {
                 Special Projects
               </Link>
 
-              {/* Careers */}
-              <Link 
-                href="/careers" 
-                className={`font-medium transition-colors ${
-                  pathname.includes('/careers') 
-                    ? 'text-teal-600' 
-                    : isScrolled 
-                      ? 'text-gray-800 hover:text-teal-600' 
-                      : 'text-gray-800 hover:text-teal-500'
-                }`}
-              >
-                Careers
-              </Link>
+              {/* Removed extra Careers (Apply moved earlier) */}
 
               {/* Employee Login */}
               <Link 
@@ -797,48 +785,23 @@ export default function Navbar() {
                   <span>Experts</span>
                 </Link>
 
-                {/* Programs Dropdown */}
-                <div>
-                  <button 
-                    onClick={() => toggleDropdown('mobile-programs')}
-                    className="w-full flex items-center justify-between py-3 px-3 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-teal-600 font-medium transition-colors"
-                  >
-                    <span>Programs</span>
-                    {activeDropdown === 'mobile-programs' ? (
-                      <FiChevronUp />
-                    ) : (
-                      <FiChevronDown />
-                    )}
-                  </button>
-                  
-                  <AnimatePresence>
-                    {activeDropdown === 'mobile-programs' && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="ml-4 mt-2 space-y-1 overflow-hidden"
-                      >
-                        {/* Application removed */}
-                        <Link 
-                          href="/scholarship-center" 
-                          className="block py-2 px-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-teal-600 rounded-md transition-colors"
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Scholarship Center
-                        </Link>
-                        <Link 
-                          href="/events" 
-                          className="block py-2 px-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-teal-600 rounded-md transition-colors"
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Events
-                        </Link>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                {/* Scholarship Center */}
+                <Link 
+                  href="/scholarship-center"
+                  className="flex items-center justify-between py-3 px-3 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-teal-600 font-medium transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span>Scholarship Center</span>
+                </Link>
+
+                {/* Events */}
+                <Link 
+                  href="/events"
+                  className="flex items-center justify-between py-3 px-3 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-teal-600 font-medium transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span>Events</span>
+                </Link>
 
                 {/* Intelligence */}
                 <Link 
@@ -858,13 +821,13 @@ export default function Navbar() {
                   <span>Special Projects</span>
                 </Link>
 
-                {/* Careers */}
+                {/* Apply earlier in list already on desktop; include here too */}
                 <Link 
                   href="/careers"
                   className="flex items-center justify-between py-3 px-3 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-teal-600 font-medium transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <span>Careers</span>
+                  <span>Apply</span>
                 </Link>
 
                 {/* Employee Login */}

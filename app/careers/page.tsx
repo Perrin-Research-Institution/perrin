@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { FiArrowRight, FiMapPin, FiClock, FiChevronDown, FiChevronUp, FiUsers, FiBookOpen, FiTrendingUp } from 'react-icons/fi';
 import { getJobs } from '../../lib/jobs';
 import { GlobalLoadingContext } from '@/components/GlobalLoading';
+import { useGlobalLoading } from '@/lib/hooks/useGlobalLoading';
 
 interface JobUI {
   id: string;
@@ -21,6 +22,7 @@ interface JobUI {
 }
 
 export default function CareersPage() {
+  const globalLoading = useGlobalLoading();
   const [expandedJob, setExpandedJob] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -31,6 +33,17 @@ export default function CareersPage() {
   const splineRef = useRef<any>(null);
   const heroRef = useRef<HTMLDivElement | null>(null);
   const [splineInteractive, setSplineInteractive] = useState(false);
+
+  useEffect(() => {
+    // Gate with global loader: on desktop/tablet wait for Spline, on mobile quick gate
+    try {
+      const isDesktop = typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches
+      globalLoading.setIsLoading(true)
+      if (!isDesktop) {
+        setTimeout(() => globalLoading.setIsLoading(false), 250)
+      }
+    } catch {}
+  }, [])
 
   useEffect(() => {
     // Try restore from sessionStorage to avoid pop-in on back navigation
@@ -64,7 +77,7 @@ export default function CareersPage() {
     })();
   }, []);
 
-  // Configure Spline viewer (disable excessive zoom if possible)
+  // Configure Spline viewer (disable excessive zoom if possible) and hide loader when ready
   useEffect(() => {
     const el: any = splineRef.current;
     if (!el) return;
@@ -74,6 +87,9 @@ export default function CareersPage() {
         if (el?.viewer?.controls) el.viewer.controls.enableZoom = false;
         if (el?.scene?.controls) el.scene.controls.enableZoom = false;
         if (el?.controls) el.controls.enableZoom = false;
+        // Hide global loader once Spline is ready (desktop/tablet only)
+        const isDesktop = typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches
+        if (isDesktop) globalLoading.setIsLoading(false)
       } catch {}
     };
     el.addEventListener('load', handleLoad);

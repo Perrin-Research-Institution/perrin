@@ -27,6 +27,9 @@ export default function JobsAdminPage() {
   const [activeJobId, setActiveJobId] = useState<string | null>(null)
   const [applications, setApplications] = useState<Record<string, Application[]>>({})
   const [loadingApps, setLoadingApps] = useState<string | null>(null)
+  const [hasJobsAccess, setHasJobsAccess] = useState(false)
+  const [passwordInput, setPasswordInput] = useState('')
+  const [pwError, setPwError] = useState('')
 
   useEffect(() => {
     const isAuthenticated = sessionStorage.getItem('perrinAdminAuth') === 'true'
@@ -34,6 +37,18 @@ export default function JobsAdminPage() {
   }, [router])
 
   useEffect(() => {
+    const access = sessionStorage.getItem('perrinJobsPW') === 'true'
+    if (access) {
+      setHasJobsAccess(true)
+    } else {
+      // Do not show loading overlay while waiting for password
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!hasJobsAccess) return
+    setLoading(true)
     ;(async () => {
       try {
         const data = await getJobs()
@@ -44,7 +59,18 @@ export default function JobsAdminPage() {
         setLoading(false)
       }
     })()
-  }, [])
+  }, [hasJobsAccess])
+
+  const handlePwSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (passwordInput === 'execstaffperrin2024!') {
+      sessionStorage.setItem('perrinJobsPW', 'true')
+      setPwError('')
+      setHasJobsAccess(true)
+    } else {
+      setPwError('Incorrect passcode. Please try again.')
+    }
+  }
 
   const loadApplications = async (jobId: string) => {
     try {
@@ -121,10 +147,39 @@ export default function JobsAdminPage() {
     }
   }
 
-  if (loading) {
+  if (loading && hasJobsAccess) {
     return (
       <div style={{ position: 'fixed', inset: 0, backgroundColor: '#000', zIndex: 9999 }}>
         <div className="min-h-screen flex items-center justify-center text-gray-300">Loading jobs…</div>
+      </div>
+    )
+  }
+
+  if (!hasJobsAccess) {
+    return (
+      <div style={{ position: 'fixed', inset: 0, background: 'linear-gradient(to bottom, #0b0f19, #000)', zIndex: 9999 }}>
+        <div className="min-h-screen flex items-center justify-center px-4">
+          <div className="w-full max-w-sm bg-gray-900/80 border border-gray-800 rounded-xl p-6 shadow-2xl">
+            <div className="flex items-center mb-4">
+              <Image src="/moretechperrin-removebg-preview.png" alt="Perrin Institution Logo" width={120} height={40} className="h-8 w-auto mr-3" />
+              <h2 className="text-gray-200 font-semibold">Jobs Access</h2>
+            </div>
+            <p className="text-sm text-gray-400 mb-4">Enter the executive staff passcode to manage jobs.</p>
+            <form onSubmit={handlePwSubmit} className="space-y-3">
+              <input
+                type="password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                placeholder="Passcode"
+                className="w-full px-3 py-2 bg-gray-800 text-gray-100 rounded border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                autoFocus
+              />
+              {pwError && <div className="text-sm text-red-400">{pwError}</div>}
+              <button type="submit" className="w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors">Unlock</button>
+            </form>
+            <div className="mt-4 text-xs text-gray-500">You must also be signed in to the Employee Portal.</div>
+          </div>
+        </div>
       </div>
     )
   }
