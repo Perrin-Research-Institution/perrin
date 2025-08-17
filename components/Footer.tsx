@@ -259,6 +259,10 @@ export default function Footer() {
             <div className="text-slate-400 text-xs font-roboto">
               Founded by Finn Jarvi & Cash Hilinski
             </div>
+            {/* Disclaimer that website is under maintenance */}
+            <div className="text-slate-400 text-xs font-roboto">
+              This website is under maintenance. Some features may not be available.
+            </div>
           </div>
         </motion.div>
       </div>
